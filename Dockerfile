@@ -49,4 +49,6 @@ RUN sed -i "s/s6-nuke -th/s6-nuke -t/" /etc/s6/init/init-stage3
 RUN apk del TMP \
     && rm -rfv /tmp/*
 
+COPY root/ /
+
 ENTRYPOINT ["/init"]
