@@ -40,7 +40,7 @@ RUN set -ex \
 RUN pip install --upgrade pip awake
 
 # Get the latest s6 overlay
-RUN LATEST_URL=`curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | jq -r ".tag_name"` \
+RUN VERSION=`curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | jq -r ".tag_name"` \
     && curl -sSL "https://github.com/just-containers/s6-overlay/releases/download/${VERSION}/s6-overlay-amd64.tar.gz" \
     | tar xzf - -C /
 RUN sed -i "s/s6-nuke -th/s6-nuke -t/" /etc/s6/init/init-stage3
