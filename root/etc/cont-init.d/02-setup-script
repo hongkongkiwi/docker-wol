@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv bash
+
+if [ -n "${CRON_CHECK_INTERVAL}" ]; then
+   mkdir -p "/var/spool/cron/crontabs"
+   echo "$CRON_CHECK_INTERVAL /bin/check_hosts" > "/var/spool/cron/crontabs/root"
+fi

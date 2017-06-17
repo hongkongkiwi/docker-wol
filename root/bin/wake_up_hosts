@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv bash
+
+AWAKE_BIN="awake"
+
+# Check that we have the awake ommand
+command -v "$AWAKE_BIN" >/dev/null 2>&1 || { echo >&2 "I require awake but it's not installed.  Aborting."; exit 1; }
+
+# Fix a broken destination port
+DESTINATION_PORT=`if [ ! -n "$DESTINATION_PORT" ] || [ "$DESTINATION_PORT" == "0" ]; then echo ""; else echo "-p $DESTINATION_PORT" fi;`
+# Check if user wants quiet or not
+VERBOSE=`[ "$VERBOSE" == "no" ] && echo "-q" || echo ""`
+
+if [ -n "$MAC_ADDRS_FILE" ] && [ -f "$MAC_ADDRS_FILE" ]; then
+  "$AWAKE_BIN" $VERBOSE -s "$MAC_FILE_SEPERATOR" -f "$MAC_ADDRS_FILE" -b "$BROADCAST_NETWORK" $DESTINATION_PORT
+elif [ -n "$HOSTS_TO_WAKE" ]; then
+  IFS=","
+  for HOST_MAC in $HOSTS_TO_CHECK
+  do
+    DEST_HOST=`echo "$HOST_MAC" | cut -f1 -d '/'`
+    DEST_MAC=`echo "$HOST_MAC" | cut -f2 -d '/'`
+    [ "$DEST_MAC" == "" ] && continue
+    if [ "$DEST_HOST" == "" ]; then
+      "$AWAKE_BIN" $VERBOSE -d "$DEST_HOST" "$DESTINATION_PORT" "$DEST_MAC"
+    else
+      "$AWAKE_BIN" $VERBOSE -b "$BROADCAST_NETWORK" $DESTINATION_PORT "$DEST_MAC"
+    fi
+  done
+fi
