@@ -1,3 +1,6 @@
 #!/usr/bin/execlineb -P
 
+chmod +x "/bin/wake_up_hosts"
+echo "$CRON_CHECK_INTERVAL /bin/wake_up_hosts" > /var/spool/cron/crontabs/root
+
 exec crond -f
